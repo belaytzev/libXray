@@ -56,12 +56,12 @@
 
 Note: The dep bump will break compilation because `HysteriaConfig` fields changed from value types (`Bandwidth`, `UdpHop`) to pointer types (`*Bandwidth`, `*UdpHop`). This task includes minimum fixes to restore compilation; the full migration to `QuicParams` happens in Tasks 2-3.
 
-- [ ] Update `go.mod`: `github.com/xtls/xray-core v1.260204.0` -> `v1.260327.0`
-- [ ] Run `go mod tidy` to update transitive dependencies
-- [ ] Fix pointer-type compilation breaks in `clash_meta.go` (temporary — use pointer assignments for `Up`/`Down`/`UdpHop`)
-- [ ] Run `go build ./...` to verify compilation succeeds
-- [ ] Write smoke test verifying `conf.QuicParamsConfig` struct is accessible (confirms dep updated correctly)
-- [ ] Run existing tests: `go test ./...`
+- [x] Update `go.mod`: `github.com/xtls/xray-core v1.260204.0` -> `v1.260327.0`
+- [x] Run `go mod tidy` to update transitive dependencies
+- [x] Fix pointer-type compilation breaks in `clash_meta.go` (temporary — use pointer assignments for `Up`/`Down`/`UdpHop`)
+- [x] Run `go build ./...` to verify compilation succeeds
+- [x] Write smoke test verifying `conf.QuicParamsConfig` struct is accessible (confirms dep updated correctly)
+- [x] Run existing tests: `go test ./...`
 
 ### Task 2: Refactor share link parsing — hysteria with QuicParams and parseSecurity
 
