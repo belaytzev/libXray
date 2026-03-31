@@ -399,32 +399,37 @@ func (proxy ClashProxy) streamSettings(outbound conf.OutboundDetourConfig) (*con
 		hysteriaSettings := &conf.HysteriaConfig{}
 		hysteriaSettings.Version = 2
 		hysteriaSettings.Auth = proxy.Password
-		if len(proxy.Up) > 0 {
-			bw := conf.Bandwidth(proxy.Up)
-			hysteriaSettings.Up = &bw
-		}
-		if len(proxy.Down) > 0 {
-			bw := conf.Bandwidth(proxy.Down)
-			hysteriaSettings.Down = &bw
-		}
-		if len(proxy.Ports) > 0 {
-			udpHop := conf.UdpHop{}
-			portListRawMessage, err := convertJsonToRawMessage(proxy.Ports)
-			if err != nil {
-				return nil, err
-			}
-			udpHop.PortList = portListRawMessage
-
-			interval := conf.Int32Range{}
-			interval.Left = proxy.HopInterval
-			interval.Right = proxy.HopInterval
-
-			udpHop.Interval = &interval
-
-			hysteriaSettings.UdpHop = &udpHop
-		}
 		streamSettings.HysteriaSettings = hysteriaSettings
-		// udpmasks
+
+		// Build QuicParams from bandwidth and port-hopping params
+		var quicParams *conf.QuicParamsConfig
+		if len(proxy.Up) > 0 || len(proxy.Down) > 0 || len(proxy.Ports) > 0 {
+			quicParams = &conf.QuicParamsConfig{}
+			if len(proxy.Up) > 0 || len(proxy.Down) > 0 {
+				quicParams.Congestion = "brutal"
+			}
+			if len(proxy.Up) > 0 {
+				quicParams.BrutalUp = conf.Bandwidth(proxy.Up)
+			}
+			if len(proxy.Down) > 0 {
+				quicParams.BrutalDown = conf.Bandwidth(proxy.Down)
+			}
+			if len(proxy.Ports) > 0 {
+				udpHop := conf.UdpHop{}
+				portListRawMessage, err := convertJsonToRawMessage(proxy.Ports)
+				if err != nil {
+					return nil, err
+				}
+				udpHop.PortList = portListRawMessage
+				if proxy.HopInterval > 0 {
+					udpHop.Interval = &conf.Int32Range{From: proxy.HopInterval, To: proxy.HopInterval}
+				}
+				quicParams.UdpHop = udpHop
+			}
+		}
+
+		// Build Salamander UDP masks
+		var udpMasks []conf.Mask
 		if proxy.Obfs == "salamander" {
 			obfs := conf.Mask{}
 			obfs.Type = "salamander"
@@ -436,14 +441,13 @@ func (proxy ClashProxy) streamSettings(outbound conf.OutboundDetourConfig) (*con
 			if err != nil {
 				return nil, err
 			}
-
 			obfs.Settings = &settingsRawMessage
+			udpMasks = []conf.Mask{obfs}
+		}
 
-			udp := []conf.Mask{obfs}
-			finalMask := conf.FinalMask{}
-			finalMask.Udp = udp
-
-			streamSettings.FinalMask = &finalMask
+		// Compose FinalMask from QuicParams + Salamander
+		if quicParams != nil || len(udpMasks) > 0 {
+			streamSettings.FinalMask = &conf.FinalMask{QuicParams: quicParams, Udp: udpMasks}
 		}
 	}
 	proxy.parseSecurity(streamSettings, outbound)
@@ -490,7 +494,7 @@ func (proxy ClashProxy) parseSecurity(streamSettings *conf.StreamConfig, outboun
 		realitySettings.Fingerprint = proxy.ClientFingerprint
 	}
 
-	if outbound.Protocol == "trojan" && len(streamSettings.Security) == 0 {
+	if (outbound.Protocol == "trojan" || outbound.Protocol == "hysteria") && len(streamSettings.Security) == 0 {
 		streamSettings.Security = "tls"
 	}
 

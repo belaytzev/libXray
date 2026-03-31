@@ -92,7 +92,7 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
 - Modify: `share/clash_meta.go`
 - Create: `share/clash_meta_test.go`
 
-- [ ] Rewrite `streamSettings()` hysteria case to:
+- [x] Rewrite `streamSettings()` hysteria case to:
   - Keep `HysteriaSettings` for `Version` + `Auth` only
   - Build `QuicParamsConfig` independently when `proxy.Up`/`proxy.Down`/`proxy.Ports` present
   - Set `Congestion: "brutal"` only when `Up` or `Down` present
@@ -101,12 +101,12 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
   - Build Salamander `udpMasks` independently
   - Compose single `FinalMask` from both QuicParams + Udp
   - Always assign `HysteriaSettings` to `streamSettings`
-- [ ] In Clash `parseSecurity()`: add `outbound.Protocol == "hysteria"` alongside trojan check for TLS default (line ~491)
-- [ ] Write tests: Clash hysteria2 with bandwidth + port-hopping + Salamander
-- [ ] Write tests: Clash hysteria2 with bandwidth only (no obfs, no ports)
-- [ ] Write tests: Clash hysteria2 with Salamander only
-- [ ] Write tests: Clash hysteria2 minimal (auth only)
-- [ ] Run tests: `go test ./share/...`
+- [x] In Clash `parseSecurity()`: add `outbound.Protocol == "hysteria"` alongside trojan check for TLS default (line ~491)
+- [x] Write tests: Clash hysteria2 with bandwidth + port-hopping + Salamander
+- [x] Write tests: Clash hysteria2 with bandwidth only (no obfs, no ports)
+- [x] Write tests: Clash hysteria2 with Salamander only
+- [x] Write tests: Clash hysteria2 minimal (auth only)
+- [x] Run tests: `go test ./share/...`
 
 ### Task 4: Update share link generation — output QuicParams for hysteria
 
