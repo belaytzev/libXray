@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/xtls/xray-core/infra/conf"
@@ -204,12 +205,55 @@ func streamSettingsQuery(proxy conf.OutboundDetourConfig, link *url.URL) {
 	}
 
 	if network == "hysteria" {
+		// TLS params
 		if streamSettings.TLSSettings != nil {
-			if len(streamSettings.TLSSettings.ServerName) > 0 {
-				query = addQuery(query, "sni", streamSettings.TLSSettings.ServerName)
+			sni := streamSettings.TLSSettings.ServerName
+			if len(sni) > 0 {
+				query = addQuery(query, "sni", sni)
+			}
+			fp := streamSettings.TLSSettings.Fingerprint
+			if len(fp) > 0 {
+				query = addQuery(query, "fp", fp)
+			}
+			alpn := streamSettings.TLSSettings.ALPN
+			if alpn != nil && len(*alpn) > 0 {
+				query = addQuery(query, "alpn", strings.Join(*alpn, ","))
+			}
+			ech := streamSettings.TLSSettings.ECHConfigList
+			if len(ech) > 0 {
+				query = addQuery(query, "ech", ech)
+			}
+			pcs := streamSettings.TLSSettings.PinnedPeerCertSha256
+			if len(pcs) > 0 {
+				query = addQuery(query, "pcs", pcs)
+			}
+			vcn := streamSettings.TLSSettings.VerifyPeerCertByName
+			if len(vcn) > 0 {
+				query = addQuery(query, "vcn", vcn)
 			}
 		}
 
+		// QuicParams (bandwidth + port-hopping)
+		if streamSettings.FinalMask != nil && streamSettings.FinalMask.QuicParams != nil {
+			qp := streamSettings.FinalMask.QuicParams
+			if len(qp.BrutalUp) > 0 {
+				query = addQuery(query, "up", string(qp.BrutalUp))
+			}
+			if len(qp.BrutalDown) > 0 {
+				query = addQuery(query, "down", string(qp.BrutalDown))
+			}
+			if qp.UdpHop.PortList != nil {
+				var portList string
+				if json.Unmarshal(qp.UdpHop.PortList, &portList) == nil && len(portList) > 0 {
+					query = addQuery(query, "ports", portList)
+				}
+			}
+			if qp.UdpHop.Interval != nil {
+				query = addQuery(query, "hop-interval", strconv.FormatInt(int64(qp.UdpHop.Interval.From), 10))
+			}
+		}
+
+		// Salamander
 		if streamSettings.FinalMask != nil && len(streamSettings.FinalMask.Udp) > 0 {
 			mask := streamSettings.FinalMask.Udp[0]
 			if mask.Settings != nil {

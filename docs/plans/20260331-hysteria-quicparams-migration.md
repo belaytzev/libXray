@@ -114,18 +114,18 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
 - Modify: `share/generate_share.go`
 - Create: `share/generate_share_test.go`
 
-- [ ] In `streamSettingsQuery()` hysteria early-return block, add QuicParams output (guard with `FinalMask != nil && FinalMask.QuicParams != nil` to avoid panic when FinalMask only has Salamander):
+- [x] In `streamSettingsQuery()` hysteria early-return block, add QuicParams output (guard with `FinalMask != nil && FinalMask.QuicParams != nil` to avoid panic when FinalMask only has Salamander):
   - `up` from `FinalMask.QuicParams.BrutalUp` (cast to `string()` — `Bandwidth` is a string type alias)
   - `down` from `FinalMask.QuicParams.BrutalDown`
   - `ports` from `FinalMask.QuicParams.UdpHop.PortList`
   - `hop-interval` from `FinalMask.QuicParams.UdpHop.Interval`
-- [ ] Add full TLS param output in hysteria early-return block (`fp`, `alpn`, `ech`, `pcs`, `vcn`) — not just `sni` — to match the richer TLS parsing from Task 2. Reuse the existing TLS/REALITY output logic or extract shared helper.
-- [ ] Keep existing Salamander output unchanged
-- [ ] Write tests: generate hy2 link with bandwidth params
-- [ ] Write tests: generate hy2 link with Salamander + bandwidth + port-hopping
-- [ ] Write tests: generate hy2 link with full TLS params (`sni`, `alpn`, `fp`)
-- [ ] Write tests: round-trip — parse hy2 link then generate, verify key params preserved (including TLS params)
-- [ ] Run tests: `go test ./share/...`
+- [x] Add full TLS param output in hysteria early-return block (`fp`, `alpn`, `ech`, `pcs`, `vcn`) — not just `sni` — to match the richer TLS parsing from Task 2. Reuse the existing TLS/REALITY output logic or extract shared helper.
+- [x] Keep existing Salamander output unchanged
+- [x] Write tests: generate hy2 link with bandwidth params
+- [x] Write tests: generate hy2 link with Salamander + bandwidth + port-hopping
+- [x] Write tests: generate hy2 link with full TLS params (`sni`, `alpn`, `fp`)
+- [x] Write tests: round-trip — parse hy2 link then generate, verify key params preserved (including TLS params)
+- [x] Run tests: `go test ./share/...`
 
 ### Task 5: Verify acceptance criteria
 
