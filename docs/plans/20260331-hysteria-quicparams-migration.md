@@ -69,8 +69,8 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
 - Modify: `share/parse_share.go`
 - Create: `share/parse_share_test.go`
 
-- [ ] In `parseSecurity()`: add `hysteria2` and `hy2` scheme check alongside `trojan` for TLS default (line ~630)
-- [ ] Rewrite `hysteriaOutbound()` to:
+- [x] In `parseSecurity()`: add `hysteria2` and `hy2` scheme check alongside `trojan` for TLS default (line ~630)
+- [x] Rewrite `hysteriaOutbound()` to:
   - Keep `HysteriaConfig` with `Version` + `Auth` only
   - Parse `up`, `down` query params -> build `QuicParamsConfig` with `Congestion: "brutal"` (only when up/down present)
   - Parse `ports`, `hop-interval` query params -> set `QuicParams.UdpHop` with `From`/`To` (not `Left`/`Right`)
@@ -78,13 +78,13 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
   - Compose single `FinalMask` from QuicParams + Udp when either present
   - Always assign `HysteriaSettings` to `streamSettings`
   - Delegate TLS to `parseSecurity()` instead of inline SNI-only handling
-- [ ] Write tests: minimal hy2 link `hy2://auth@host:443?sni=example.com`
-- [ ] Write tests: hy2 with bandwidth `hy2://auth@host:443?up=100+mbps&down=200+mbps&sni=example.com`
-- [ ] Write tests: hy2 with Salamander `hy2://auth@host:443?obfs=salamander&obfs-password=secret&sni=example.com`
-- [ ] Write tests: hy2 with everything `hy2://auth@host:443?up=50+mbps&down=100+mbps&obfs=salamander&obfs-password=secret&ports=20000-40000&hop-interval=30&sni=example.com`
-- [ ] Write tests: hy2 with TLS params `hy2://auth@host:443?sni=example.com&alpn=h3&fp=chrome`
-- [ ] Write tests: hy2 with ports only (no bandwidth) — verify no `Congestion` set
-- [ ] Run tests: `go test ./share/...`
+- [x] Write tests: minimal hy2 link `hy2://auth@host:443?sni=example.com`
+- [x] Write tests: hy2 with bandwidth `hy2://auth@host:443?up=100+mbps&down=200+mbps&sni=example.com`
+- [x] Write tests: hy2 with Salamander `hy2://auth@host:443?obfs=salamander&obfs-password=secret&sni=example.com`
+- [x] Write tests: hy2 with everything `hy2://auth@host:443?up=50+mbps&down=100+mbps&obfs=salamander&obfs-password=secret&ports=20000-40000&hop-interval=30&sni=example.com`
+- [x] Write tests: hy2 with TLS params `hy2://auth@host:443?sni=example.com&alpn=h3&fp=chrome`
+- [x] Write tests: hy2 with ports only (no bandwidth) — verify no `Congestion` set
+- [x] Run tests: `go test ./share/...`
 
 ### Task 3: Refactor Clash Meta parser — hysteria with QuicParams
 
