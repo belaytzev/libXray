@@ -77,7 +77,7 @@ func TestGenerate_Hy2_WithSalamanderBandwidthPortHopping(t *testing.T) {
 			BrutalDown: conf.Bandwidth("100 mbps"),
 			UdpHop: conf.UdpHop{
 				PortList: portListJSON,
-				Interval: &conf.Int32Range{From: 30, To: 30},
+				Interval: &conf.Int32Range{Left: 30, Right: 30, From: 30, To: 30},
 			},
 		},
 	}

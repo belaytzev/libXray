@@ -185,7 +185,7 @@ func hysteriaLink(proxy conf.OutboundDetourConfig, link *url.URL) error {
 
 	link.Host = fmt.Sprintf("%s:%d", settings.Address, settings.Port)
 
-	if proxy.StreamSetting.HysteriaSettings != nil {
+	if proxy.StreamSetting != nil && proxy.StreamSetting.HysteriaSettings != nil {
 		link.User = url.User(proxy.StreamSetting.HysteriaSettings.Auth)
 	}
 
@@ -230,6 +230,9 @@ func streamSettingsQuery(proxy conf.OutboundDetourConfig, link *url.URL) {
 			vcn := streamSettings.TLSSettings.VerifyPeerCertByName
 			if len(vcn) > 0 {
 				query = addQuery(query, "vcn", vcn)
+			}
+			if streamSettings.TLSSettings.AllowInsecure {
+				query = addQuery(query, "insecure", "1")
 			}
 		}
 
@@ -432,6 +435,9 @@ func streamSettingsQuery(proxy conf.OutboundDetourConfig, link *url.URL) {
 		vcn := streamSettings.TLSSettings.VerifyPeerCertByName
 		if len(vcn) > 0 {
 			query = addQuery(query, "vcn", vcn)
+		}
+		if streamSettings.TLSSettings.AllowInsecure {
+			query = addQuery(query, "insecure", "1")
 		}
 	case "reality":
 		if streamSettings.REALITYSettings == nil {

@@ -138,9 +138,9 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
 
 ### Task 6: [Final] Update documentation
 
-- [ ] Update README.md if needed
-- [ ] Run final `go test ./...` and `go vet ./...` to confirm no regressions
-- [ ] Move this plan to `docs/plans/completed/`
+- [x] Update README.md if needed
+- [x] Run final `go test ./...` and `go vet ./...` to confirm no regressions
+- [x] Move this plan to `docs/plans/completed/`
 
 ## Technical Details
 

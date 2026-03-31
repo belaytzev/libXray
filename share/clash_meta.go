@@ -422,7 +422,7 @@ func (proxy ClashProxy) streamSettings(outbound conf.OutboundDetourConfig) (*con
 				}
 				udpHop.PortList = portListRawMessage
 				if proxy.HopInterval > 0 {
-					udpHop.Interval = &conf.Int32Range{From: proxy.HopInterval, To: proxy.HopInterval}
+					udpHop.Interval = &conf.Int32Range{Left: proxy.HopInterval, Right: proxy.HopInterval, From: proxy.HopInterval, To: proxy.HopInterval}
 				}
 				quicParams.UdpHop = udpHop
 			}
@@ -430,7 +430,7 @@ func (proxy ClashProxy) streamSettings(outbound conf.OutboundDetourConfig) (*con
 
 		// Build Salamander UDP masks
 		var udpMasks []conf.Mask
-		if proxy.Obfs == "salamander" {
+		if proxy.Obfs == "salamander" && len(proxy.ObfsPassword) > 0 {
 			obfs := conf.Mask{}
 			obfs.Type = "salamander"
 
@@ -493,6 +493,8 @@ func (proxy ClashProxy) parseSecurity(streamSettings *conf.StreamConfig, outboun
 		tlsSettings.Fingerprint = proxy.ClientFingerprint
 		realitySettings.Fingerprint = proxy.ClientFingerprint
 	}
+
+	tlsSettings.AllowInsecure = proxy.SkipCertVerify
 
 	if (outbound.Protocol == "trojan" || outbound.Protocol == "hysteria") && len(streamSettings.Security) == 0 {
 		streamSettings.Security = "tls"

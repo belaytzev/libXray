@@ -30,3 +30,6 @@ test/
 config/
 .DS_Store
 bin/
+
+# ralphex progress logs
+.ralphex/progress/

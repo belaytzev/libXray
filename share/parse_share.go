@@ -454,16 +454,17 @@ func (proxy xrayShareLink) hysteriaOutbound() (*conf.OutboundDetourConfig, error
 					return nil, err
 				}
 				i32 := int32(interval)
-				udpHop.Interval = &conf.Int32Range{From: i32, To: i32}
+				udpHop.Interval = &conf.Int32Range{Left: i32, Right: i32, From: i32, To: i32}
 			}
 			quicParams.UdpHop = udpHop
 		}
 	}
 
 	// Build Salamander UDP masks
+	obfsType := query.Get("obfs")
 	obfsPassword := query.Get("obfs-password")
 	var udpMasks []conf.Mask
-	if len(obfsPassword) > 0 {
+	if obfsType == "salamander" && len(obfsPassword) > 0 {
 		obfs := conf.Mask{}
 		obfs.Type = "salamander"
 
@@ -641,6 +642,11 @@ func (proxy xrayShareLink) parseSecurity(link *url.URL, streamSettings *conf.Str
 	if len(alpn) > 0 {
 		alpn := conf.StringList(strings.Split(alpn, ","))
 		tlsSettings.ALPN = &alpn
+	}
+
+	insecure := query.Get("insecure")
+	if insecure == "1" {
+		tlsSettings.AllowInsecure = true
 	}
 
 	pbk := query.Get("pbk")
