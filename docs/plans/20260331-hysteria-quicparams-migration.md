@@ -129,12 +129,12 @@ Note: The dep bump will break compilation because `HysteriaConfig` fields change
 
 ### Task 5: Verify acceptance criteria
 
-- [ ] Verify all requirements from Overview are implemented
-- [ ] Verify edge cases: QuicParams only, Salamander only, both combined
-- [ ] Verify `Int32Range` bug is fixed (uses `From`/`To`)
-- [ ] Verify `parseSecurity()` TLS default works for hysteria2/hy2 schemes
-- [ ] Run full test suite: `go test ./...`
-- [ ] Run `go vet ./...` for static analysis
+- [x] Verify all requirements from Overview are implemented
+- [x] Verify edge cases: QuicParams only, Salamander only, both combined
+- [x] Verify `Int32Range` bug is fixed (uses `From`/`To`)
+- [x] Verify `parseSecurity()` TLS default works for hysteria2/hy2 schemes
+- [x] Run full test suite: `go test ./...`
+- [x] Run `go vet ./...` for static analysis
 
 ### Task 6: [Final] Update documentation
 
